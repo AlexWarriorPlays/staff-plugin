@@ -1,0 +1,8 @@
+name: Staff
+version: '${project.version}'
+main: com.al3x.staff.Main
+commands:
+  vanish:
+    aliases: [v]
+  staffmode:
+    aliases: [mod, modemode, staff]
