@@ -13,12 +13,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class Vanish implements CommandExecutor {
 
     String prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "S" + ChatColor.GRAY + "]";
 
-    private static List<UUID> vanished = new ArrayList<UUID>();
+    private static List<UUID> vanished = new ArrayList<>();
 
     public static List<UUID> getVanishList() {
         return vanished;
@@ -31,7 +32,7 @@ public class Vanish implements CommandExecutor {
 
             Player plr = (Player) sender;
 
-            if (sender.hasPermission("ratiomc.vanish")) {
+            if (sender.hasPermission("ratiomc.staff")) {
 
                 if (vanished.contains(((Player) sender).getUniqueId())) {
 
@@ -40,9 +41,21 @@ public class Vanish implements CommandExecutor {
                     for (Player players : Bukkit.getServer().getOnlinePlayers()) {
                         players.showPlayer((Player) sender);
 
-                        if (players.hasPermission("ratiomc.vanish")) {
-                            players.sendMessage(prefix + ChatColor.RED + " " + ((Player) sender).getDisplayName() + " just unvanished");
+                        if (players.hasPermission("ratiomc.staff")) {
+                            if (args.length == 1) {
+                                if (args[0].equalsIgnoreCase("staffmode")) {
+                                    System.out.println("Silent Vanish");
+                                }
+                            } else {
+                                players.sendMessage(prefix + ChatColor.RED + " " + ((Player) sender).getDisplayName() + " just unvanished");
+                            }
                         }
+                    }
+
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
                     if (StaffMode.getStaffmodeList().contains(plr.getUniqueId())) {
@@ -59,10 +72,18 @@ public class Vanish implements CommandExecutor {
                     vanished.add(((Player) sender).getUniqueId());
 
                     for (Player players : Bukkit.getServer().getOnlinePlayers()) {
-                        if (!players.hasPermission("ratiomc.vanish")) {
+                        if (!players.hasPermission("ratiomc.staff")) {
                             players.hidePlayer((Player) sender);
                         } else {
-                            players.sendMessage(prefix + ChatColor.RED + " " + ((Player) sender).getDisplayName() + " just went into vanish");
+                            if (args.length == 1) {
+                                if (args[0].equalsIgnoreCase("staffmode")) {
+                                    System.out.println("Silent Vanish");
+
+                                }
+                            } else {
+                                players.sendMessage(prefix + ChatColor.RED + " " + ((Player) sender).getDisplayName() + " just went into vanish");
+                            }
+
                         }
                     }
 

@@ -14,28 +14,27 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class StaffMode implements CommandExecutor, Listener{
 
     String prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "S" + ChatColor.GRAY + "]";
 
-    private static List<UUID> staffmode = new ArrayList<UUID>();
+    private static List<UUID> staffmode = new ArrayList<>();
 
     public static List<UUID> getStaffmodeList() {
         return staffmode;
     }
 
-    private static HashMap<UUID, ItemStack[]> armorContents = new HashMap<UUID, ItemStack[]>();
-    private static HashMap<UUID, ItemStack[]> inventoryContents = new HashMap<UUID, ItemStack[]>();
+    private static HashMap<UUID, ItemStack[]> armorContents = new HashMap<>();
+    private static HashMap<UUID, ItemStack[]> inventoryContents = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -52,11 +51,6 @@ public class StaffMode implements CommandExecutor, Listener{
 
                 saveInv(plr);
 
-                try {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
                 // THRU
                 ItemStack compass = new ItemStack(Material.COMPASS);
@@ -126,12 +120,17 @@ public class StaffMode implements CommandExecutor, Listener{
                 // VANISH
 
                 if (!Vanish.getVanishList().contains(plr.getUniqueId())) {
-                    plr.performCommand("vanish");
+                    plr.performCommand("vanish staffmode");
+
                 }
 
                 plr.setGameMode(GameMode.CREATIVE);
 
-                sender.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just entered staffmode!");
+                for (Player players : Bukkit.getOnlinePlayers()) {
+                    if (players.hasPermission("ratiomc.staff")) {
+                        players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just entered staffmode!" + ChatColor.GRAY + " [And Vanished]");
+                    }
+                }
 
 
 
@@ -143,7 +142,17 @@ public class StaffMode implements CommandExecutor, Listener{
 
                 plr.setGameMode(GameMode.SURVIVAL);
 
-                plr.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!");
+                for (Player players : Bukkit.getOnlinePlayers()) {
+                    if (players.hasPermission("ratiomc.staff")) {
+                        if (Vanish.getVanishList().contains(plr.getUniqueId())) {
+                            plr.performCommand("vanish staffmode");
+                            players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!" + ChatColor.GRAY + " [And Unvanished]");
+                        } else {
+                            players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!");
+                        }
+
+                    }
+                }
 
 
             }
@@ -157,25 +166,34 @@ public class StaffMode implements CommandExecutor, Listener{
 
     public static void saveInv(Player plr) {
 
-        //armorContents.put(plr.getUniqueId(), plr.getInventory().getArmorContents());
-        inventoryContents.put(plr.getUniqueId(), plr.getInventory().getContents());
+        if (!(plr.getInventory().getContents().length == 0)) {
+
+            //armorContents.put(plr.getUniqueId(), plr.getInventory().getArmorContents());
+            inventoryContents.put(plr.getUniqueId(), plr.getInventory().getContents());
+
+            plr.getInventory().clear();
+
+        } else {
+            System.out.println("Inventory Empty");
+        }
 
         plr.getInventory().setBoots(new ItemStack(Material.AIR));
         plr.getInventory().setLeggings(new ItemStack(Material.AIR));
         plr.getInventory().setChestplate(new ItemStack(Material.AIR));
         plr.getInventory().setHelmet(new ItemStack(Material.AIR));
 
-        plr.getInventory().clear();
-
     }
 
     public static void restoreInv (Player plr) {
 
         //plr.getInventory().setArmorContents(armorContents.get(plr.getUniqueId()));
-        plr.getInventory().setContents(inventoryContents.get(plr.getUniqueId()));
+        if (!(inventoryContents.get(plr.getUniqueId()) == null)) {
+            plr.getInventory().setContents(inventoryContents.get(plr.getUniqueId()));
 
-        armorContents.remove(plr.getUniqueId());
-        inventoryContents.remove(plr.getUniqueId());
+            inventoryContents.remove(plr.getUniqueId());
+        }
+
+        plr.updateInventory();
 
     }
 
@@ -228,6 +246,16 @@ public class StaffMode implements CommandExecutor, Listener{
             plr.sendMessage(ChatColor.RED + "You cannot drop items in staffmode.");
         }
 
+    }
+
+    @EventHandler
+    public void pickup(PlayerPickupItemEvent e) {
+
+        Player plr = e.getPlayer();
+
+        if (staffmode.contains(plr.getUniqueId())) {
+            e.setCancelled(true);
+        }
     }
 
 }
