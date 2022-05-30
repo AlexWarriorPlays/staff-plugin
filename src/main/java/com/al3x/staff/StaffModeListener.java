@@ -31,13 +31,8 @@ public class StaffModeListener implements Listener {
 
             // ONLINE STAFF
             if (plr.getItemInHand().getType() == Material.SKULL_ITEM && plr.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "⋙ " + ChatColor.RED + "Online Staff" + ChatColor.DARK_RED + " ⋘")) {
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    plr.sendMessage(ChatColor.BLACK.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------");
-                    if (players.hasPermission("ratiomc.staff")) {
-                        plr.sendMessage(players.getDisplayName());
-                    }
-                    plr.sendMessage(ChatColor.BLACK.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------");
-                }
+
+                plr.performCommand("onlinestaff");
             }
 
             // RANDOM TP
@@ -80,7 +75,7 @@ public class StaffModeListener implements Listener {
         if (plr.getItemInHand().getType() == Material.BOOK && plr.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GOLD + "⋙ " + ChatColor.YELLOW + "Inspect Inventory" + ChatColor.GOLD + " ⋘")) {
             if (e.getRightClicked() instanceof Player) {
                 Player target = (Player) e.getRightClicked();
-                plr.performCommand("invsee " + target.getDisplayName());
+                plr.performCommand("invsee " + target.getName());
             }
         }
 
@@ -88,7 +83,7 @@ public class StaffModeListener implements Listener {
         if (plr.getItemInHand().getType() == Material.ICE && plr.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_GRAY + "⋙ " + ChatColor.GRAY + "Freeze" + ChatColor.DARK_GRAY + " ⋘")) {
             if (e.getRightClicked() instanceof Player) {
                 Player target = (Player) e.getRightClicked();
-                plr.performCommand("freeze " + target.getDisplayName());
+                plr.performCommand("freeze " + target.getName());
             }
         }
     }
