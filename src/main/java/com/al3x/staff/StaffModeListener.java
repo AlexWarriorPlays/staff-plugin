@@ -38,7 +38,7 @@ public class StaffModeListener implements Listener {
         }
 
         // RANDOM TP
-        if (plr.getItemInHand().getType() == Material.ENDER_PORTAL && plr.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "⋙ " + ChatColor.LIGHT_PURPLE + "Random Teleport" + ChatColor.DARK_PURPLE + " ⋘")) {
+        if (plr.getItemInHand().getType() == Material.NETHER_STAR && plr.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + "⋙ " + ChatColor.LIGHT_PURPLE + "Random Teleport" + ChatColor.DARK_PURPLE + " ⋘")) {
             ArrayList<Player> playersList = new ArrayList<>();
             for (Player players : Bukkit.getOnlinePlayers()) {
                 if (!players.hasPermission("ratiomc.staff")) {
