@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,117 +46,7 @@ public class StaffMode implements CommandExecutor, Listener{
 
         if (sender.hasPermission("ratiomc.staffmode")) {
 
-            if (!staffmode.contains(((Player) sender).getUniqueId())) {
-
-                staffmode.add(plr.getUniqueId());
-
-                saveInv(plr);
-
-
-                // THRU
-                ItemStack compass = new ItemStack(Material.COMPASS);
-                ItemMeta compassmeta = compass.getItemMeta();
-                compassmeta.setDisplayName(ChatColor.DARK_AQUA + "⋙ " + ChatColor.AQUA + "Phase" + ChatColor.DARK_AQUA + " ⋘");
-                compass.setItemMeta(compassmeta);
-
-                plr.getInventory().setItem(0, compass);
-                // THRU
-
-                // ONLINE STAFF
-                ItemStack skull = new ItemStack(Material.SKULL_ITEM);
-                ItemMeta skullmeta = skull.getItemMeta();
-                skullmeta.setDisplayName(ChatColor.DARK_RED + "⋙ " + ChatColor.RED + "Online Staff" + ChatColor.DARK_RED + " ⋘");
-                skull.setItemMeta(skullmeta);
-
-                plr.getInventory().setItem(1, skull);
-                // ONLINE STAFF
-
-
-                // RANDOM TP
-                ItemStack portal = new ItemStack(Material.NETHER_STAR);
-                ItemMeta portalmeta = portal.getItemMeta();
-                portalmeta.setDisplayName(ChatColor.DARK_PURPLE + "⋙ " + ChatColor.LIGHT_PURPLE + "Random Teleport" + ChatColor.DARK_PURPLE + " ⋘");
-                portal.setItemMeta(portalmeta);
-
-                plr.getInventory().setItem(2, portal);
-                // RANDOM TP
-
-
-                // EXIT
-                ItemStack exit = new ItemStack(Material.BARRIER);
-                ItemMeta exitmeta = exit.getItemMeta();
-                exitmeta.setDisplayName(ChatColor.RED + "⋙ " + ChatColor.DARK_RED + "Exit Staffmode" + ChatColor.RED + " ⋘");
-                exit.setItemMeta(exitmeta);
-
-                plr.getInventory().setItem(4, exit);
-                // EXIT
-
-
-                // INSPECT INV
-                ItemStack book = new ItemStack(Material.BOOK);
-                ItemMeta bookmeta = book.getItemMeta();
-                bookmeta.setDisplayName(ChatColor.GOLD + "⋙ " + ChatColor.YELLOW + "Inspect Inventory" + ChatColor.GOLD + " ⋘");
-                book.setItemMeta(bookmeta);
-
-                plr.getInventory().setItem(6, book);
-                // INSPECT INV
-
-
-                // FREEZE
-                ItemStack freeze = new ItemStack(Material.ICE);
-                ItemMeta freezemeta = freeze.getItemMeta();
-                freezemeta.setDisplayName(ChatColor.DARK_GRAY + "⋙ " + ChatColor.GRAY + "Freeze" + ChatColor.DARK_GRAY + " ⋘");
-                freeze.setItemMeta(freezemeta);
-
-                plr.getInventory().setItem(7, freeze);
-                // FREEZE
-
-                // VANISH
-                ItemStack vanish = new ItemStack(Material.INK_SACK, 1, (short) 10);
-                ItemMeta vanishmeta = vanish.getItemMeta();
-                vanishmeta.setDisplayName(ChatColor.DARK_GREEN + "⋙ " + ChatColor.GREEN + "Vanish Current: ON" + ChatColor.DARK_GREEN + " ⋘");
-                vanish.setItemMeta(vanishmeta);
-
-                plr.getInventory().setItem(8, vanish);
-                // VANISH
-
-                if (!Vanish.getVanishList().contains(plr.getUniqueId())) {
-                    plr.performCommand("vanish staffmode");
-
-                }
-
-                plr.setGameMode(GameMode.CREATIVE);
-
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (players.hasPermission("ratiomc.staff")) {
-                        players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just entered staffmode!" + ChatColor.GRAY + " [And Vanished]");
-                    }
-                }
-
-
-
-            } else {
-
-                staffmode.remove(plr.getUniqueId());
-
-                restoreInv(plr);
-
-                plr.setGameMode(GameMode.SURVIVAL);
-
-                for (Player players : Bukkit.getOnlinePlayers()) {
-                    if (players.hasPermission("ratiomc.staff")) {
-                        if (Vanish.getVanishList().contains(plr.getUniqueId())) {
-                            plr.performCommand("vanish staffmode");
-                            players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!" + ChatColor.GRAY + " [And Unvanished]");
-                        } else {
-                            players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!");
-                        }
-
-                    }
-                }
-
-
-            }
+            staffmodeToggle(plr);
 
 
         }
@@ -195,6 +86,121 @@ public class StaffMode implements CommandExecutor, Listener{
 
         plr.updateInventory();
 
+    }
+
+    public static void staffmodeToggle (Player plr) {
+        String prefix = ChatColor.GRAY + "[" + ChatColor.DARK_RED + "S" + ChatColor.GRAY + "]";
+        if (!staffmode.contains(plr.getUniqueId())) {
+
+            staffmode.add(plr.getUniqueId());
+
+            saveInv(plr);
+
+
+            // THRU
+            ItemStack compass = new ItemStack(Material.COMPASS);
+            ItemMeta compassmeta = compass.getItemMeta();
+            compassmeta.setDisplayName(ChatColor.DARK_AQUA + "⋙ " + ChatColor.AQUA + "Phase" + ChatColor.DARK_AQUA + " ⋘");
+            compass.setItemMeta(compassmeta);
+
+            plr.getInventory().setItem(0, compass);
+            // THRU
+
+            // ONLINE STAFF
+            ItemStack skull = new ItemStack(Material.SKULL_ITEM);
+            ItemMeta skullmeta = skull.getItemMeta();
+            skullmeta.setDisplayName(ChatColor.DARK_RED + "⋙ " + ChatColor.RED + "Online Staff" + ChatColor.DARK_RED + " ⋘");
+            skull.setItemMeta(skullmeta);
+
+            plr.getInventory().setItem(1, skull);
+            // ONLINE STAFF
+
+
+            // RANDOM TP
+            ItemStack portal = new ItemStack(Material.NETHER_STAR);
+            ItemMeta portalmeta = portal.getItemMeta();
+            portalmeta.setDisplayName(ChatColor.DARK_PURPLE + "⋙ " + ChatColor.LIGHT_PURPLE + "Random Teleport" + ChatColor.DARK_PURPLE + " ⋘");
+            portal.setItemMeta(portalmeta);
+
+            plr.getInventory().setItem(2, portal);
+            // RANDOM TP
+
+
+            // EXIT
+            ItemStack exit = new ItemStack(Material.BARRIER);
+            ItemMeta exitmeta = exit.getItemMeta();
+            exitmeta.setDisplayName(ChatColor.RED + "⋙ " + ChatColor.DARK_RED + "Exit Staffmode" + ChatColor.RED + " ⋘");
+            exit.setItemMeta(exitmeta);
+
+            plr.getInventory().setItem(4, exit);
+            // EXIT
+
+
+            // INSPECT INV
+            ItemStack book = new ItemStack(Material.BOOK);
+            ItemMeta bookmeta = book.getItemMeta();
+            bookmeta.setDisplayName(ChatColor.GOLD + "⋙ " + ChatColor.YELLOW + "Inspect Inventory" + ChatColor.GOLD + " ⋘");
+            book.setItemMeta(bookmeta);
+
+            plr.getInventory().setItem(6, book);
+            // INSPECT INV
+
+
+            // FREEZE
+            ItemStack freeze = new ItemStack(Material.ICE);
+            ItemMeta freezemeta = freeze.getItemMeta();
+            freezemeta.setDisplayName(ChatColor.DARK_GRAY + "⋙ " + ChatColor.GRAY + "Freeze" + ChatColor.DARK_GRAY + " ⋘");
+            freeze.setItemMeta(freezemeta);
+
+            plr.getInventory().setItem(7, freeze);
+            // FREEZE
+
+            // VANISH
+            ItemStack vanish = new ItemStack(Material.INK_SACK, 1, (short) 10);
+            ItemMeta vanishmeta = vanish.getItemMeta();
+            vanishmeta.setDisplayName(ChatColor.DARK_GREEN + "⋙ " + ChatColor.GREEN + "Vanish Current: ON" + ChatColor.DARK_GREEN + " ⋘");
+            vanish.setItemMeta(vanishmeta);
+
+            plr.getInventory().setItem(8, vanish);
+            // VANISH
+
+            if (!Vanish.getVanishList().contains(plr.getUniqueId())) {
+                plr.performCommand("vanish staffmode");
+
+            }
+
+            plr.setGameMode(GameMode.CREATIVE);
+
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (players.hasPermission("ratiomc.staff")) {
+                    players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just entered staffmode!" + ChatColor.GRAY + " [And Vanished]");
+                }
+            }
+
+
+
+        } else {
+
+            staffmode.remove(plr.getUniqueId());
+
+            restoreInv(plr);
+
+            plr.setGameMode(GameMode.SURVIVAL);
+
+            for (Player players : Bukkit.getOnlinePlayers()) {
+                if (players.hasPermission("ratiomc.staff")) {
+                    if (Vanish.getVanishList().contains(plr.getUniqueId())) {
+                        plr.performCommand("vanish staffmode");
+                        players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!" + ChatColor.GRAY + " [And Unvanished]");
+                    } else {
+                        players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!");
+                    }
+
+                }
+            }
+
+
+        }
     }
 
     @EventHandler
@@ -256,6 +262,16 @@ public class StaffMode implements CommandExecutor, Listener{
         if (staffmode.contains(plr.getUniqueId())) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void gamemodeChange(PlayerGameModeChangeEvent e) {
+        Player plr = e.getPlayer();
+
+        if (staffmode.contains(plr.getUniqueId())) {
+            staffmodeToggle(plr);
+        }
+
     }
 
 }
