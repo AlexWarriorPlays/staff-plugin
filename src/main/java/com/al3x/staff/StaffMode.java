@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -171,12 +172,6 @@ public class StaffMode implements CommandExecutor, Listener{
 
             plr.setGameMode(GameMode.CREATIVE);
 
-            for (Player players : Bukkit.getOnlinePlayers()) {
-                if (players.hasPermission("ratiomc.staff")) {
-                    players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just entered staffmode!" + ChatColor.GRAY + " [And Vanished]");
-                }
-            }
-
 
 
         } else {
@@ -191,9 +186,6 @@ public class StaffMode implements CommandExecutor, Listener{
                 if (players.hasPermission("ratiomc.staff")) {
                     if (Vanish.getVanishList().contains(plr.getUniqueId())) {
                         plr.performCommand("vanish staffmode");
-                        players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!" + ChatColor.GRAY + " [And Unvanished]");
-                    } else {
-                        players.sendMessage(prefix + ChatColor.RED + " " + plr.getDisplayName() + " just left staffmode!");
                     }
 
                 }
@@ -268,10 +260,19 @@ public class StaffMode implements CommandExecutor, Listener{
     public void gamemodeChange(PlayerGameModeChangeEvent e) {
         Player plr = e.getPlayer();
 
-        if (staffmode.contains(plr.getUniqueId())) {
+        if (staffmode.contains(plr.getUniqueId()) && !(e.getNewGameMode().equals(GameMode.CREATIVE))) {
             staffmodeToggle(plr);
         }
 
+    }
+
+    @EventHandler
+    public void hitplayer(PlayerInteractEntityEvent e) {
+        Player plr = e.getPlayer();
+
+        if (staffmode.contains(plr.getUniqueId())) {
+            e.setCancelled(true);
+        }
     }
 
 }

@@ -46,8 +46,6 @@ public class Vanish implements CommandExecutor {
                                 if (args[0].equalsIgnoreCase("staffmode")) {
                                     System.out.println("Silent Vanish");
                                 }
-                            } else {
-                                players.sendMessage(prefix + ChatColor.RED + " " + ((Player) sender).getDisplayName() + " just unvanished");
                             }
                         }
                     }
@@ -80,8 +78,6 @@ public class Vanish implements CommandExecutor {
                                     System.out.println("Silent Vanish");
 
                                 }
-                            } else {
-                                players.sendMessage(prefix + ChatColor.RED + " " + ((Player) sender).getDisplayName() + " just went into vanish");
                             }
 
                         }
