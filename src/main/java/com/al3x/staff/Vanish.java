@@ -45,6 +45,8 @@ public class Vanish implements CommandExecutor {
                             if (args.length == 1) {
                                 if (args[0].equalsIgnoreCase("staffmode")) {
                                     System.out.println("Silent Vanish");
+                                } else {
+                                    plr.sendMessage(ChatColor.RED + "Unvanished.");
                                 }
                             }
                         }
@@ -77,6 +79,8 @@ public class Vanish implements CommandExecutor {
                                 if (args[0].equalsIgnoreCase("staffmode")) {
                                     System.out.println("Silent Vanish");
 
+                                } else {
+                                    plr.sendMessage(ChatColor.RED + "Vanished.");
                                 }
                             }
 

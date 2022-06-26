@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -219,11 +220,11 @@ public class StaffMode implements CommandExecutor, Listener{
         }
     }
 
-    @EventHandler
-    public void interactEntity(EntityDamageEvent e) {
 
-        if (e.getEntity() instanceof Player) {
-            Player plr = (Player) e.getEntity();
+    @EventHandler
+    public void entityDamage(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Player) {
+            Player plr = (Player) e.getDamager();
 
             if (staffmode.contains(plr.getUniqueId())) {
                 e.setCancelled(true);
